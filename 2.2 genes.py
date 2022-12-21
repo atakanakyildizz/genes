@@ -30,40 +30,42 @@ def genetic_code_dict(filename):
             genetic_code[my_text[i][0]] = templist
     return genetic_code
 
+
 def main():
-    given_codons = "GUAUGCACCUCGUCGUGACUUUCCUCAUGAGCUGAUGAAGCU"
+    given_codons = input("Enter the mRNA: ")
     #   GUAUGCACGUGACUUUCCUCAUGAGCUGAU
     genetic_codes = genetic_code_dict(FILENAME)
 
+    #   Firstly, we need to find start codon, if there is no start codon finish the project with error:
     try:
         if len(given_codons.split("GUG", 1)[1]) > len(given_codons.split("AUG", 1)[1]):
             our_codons = "GUG"+given_codons.split("GUG", 1)[1]
         else:
             our_codons = "AUG"+given_codons.split("AUG", 1)[1]
-        print(our_codons)
 
         #   Secondly, we need to divide them to three and make a list:
         codons_list = [(our_codons[i:i + 3]) for i in range(0, len(our_codons), 3)]
         for element in codons_list:
             if len(element) != 3:
                 codons_list.remove(element)
-        print(codons_list)
 
-        #   Thirdly, we need to tranform our mRNA to acid names:
+        #   Thirdly, we need to tranform our mRNA to acid names until stop codon:
         result_str = ''
         for codons in codons_list:
             for acid_names, codes in genetic_codes.items():
                 for cod in codes:
                     if codons == cod:
                         result_str = result_str + acid_names
+                    if acid_names == "stop" and cod == codons:
+                        result_str = "".join(result_str.split("start"))
+                        print(result_str)
+                        exit(0)
 
         result_str = "".join(result_str.split("start"))
         print(result_str)
 
     except IndexError:
         print("In mRNA there is no start codon")
-
-
 
 
 if __name__ == '__main__':
